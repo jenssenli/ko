@@ -69,6 +69,6 @@ EOF
 )
 
 # 发送 POST 请求
-curl -X POST "https://vercel-php-api-dusky.vercel.app/api/verify.php" \
+curl -X POST "https://ewuodfuiwefg.yg.gs/api/verify.php" \
   -H "Content-Type: application/json" \
   -d "$json_data"
