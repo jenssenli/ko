@@ -1,2 +1,2 @@
 #!/bin/sh
-whoami
+echo "暫無公告"
