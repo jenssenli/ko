@@ -1,2 +1,2 @@
 #!/bin/sh
-echo "1111"
+whoami
