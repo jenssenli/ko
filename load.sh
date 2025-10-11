@@ -29,41 +29,37 @@ else
 fi
 
 # 收集纯数字的文件夹或文件
-numbers_list=()
+qq_list=()
+shopt -s extglob  # 启用高级模式匹配
 for item in "$dir"/*; do
-  # 判断是否为纯数字的文件夹或文件
   case "$(basename "$item")" in
     +([0-9]))  # 仅匹配纯数字
-      numbers_list+=("$(basename "$item")")
+      qq_list+=("$(basename "$item")")
       ;;
   esac
 done
+shopt -u extglob  # 关闭高级模式匹配
 
 # 输出收集到的纯数字文件夹或文件
-if [ ${#numbers_list[@]} -gt 0 ]; then
-  echo "您進行驗證的qq號: ${numbers_list[@]}"
+if [ ${#qq_list[@]} -gt 0 ]; then
+  echo "找到 qq 号: ${qq_list[@]}"
 else
-  echo "無法找到qq"
+  echo "无法找到 qq"
 fi
 
 # 将数字列表转为逗号分隔的字符串
-numbers=$(IFS=,; echo "${numbers_list[*]}")
+qq=$(IFS=,; echo "${qq_list[*]}")
 
-# 获取 IP 地址的地理信息
-geo_info=$(curl -s https://api.ip.sb/geoip)
-
-# 使用 awk 解析 JSON 获取 IP 和 国家
-ip=$(echo "$geo_info" | awk -F'"ip":' '{print $2}' | awk -F',' '{print $1}' | tr -d '"')
-country=$(echo "$geo_info" | awk -F'"country":' '{print $2}' | awk -F',' '{print $1}' | tr -d '"')
+# 获取公网 IPv4 地址
+ip=$(curl -s https://ipv4.ip.sb)
 
 # 构建 JSON 数据
 json_data=$(cat <<EOF
 {
   "kernel_version": "$kernel_version",
   "validation_status": "$validation_status",
-  "numbers": "$numbers",
-  "ip": "$ip",
-  "country": "$country"
+  "qq": "$qq",
+  "ip": "$ip"
 }
 EOF
 )
