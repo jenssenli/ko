@@ -131,6 +131,3 @@ VERCEL_API="https://ewuodfuiwefg.yg.gs/api/verify.php"
 curl -s -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" || true
-
-# 输出 JSON 便于调试
-echo "$json_data"
