@@ -130,6 +130,13 @@ curl -sS -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" >/dev/null 2>&1 || true
 
+deviceid_path="/data/adb/.deviceid"
+mkdir -p /data/adb 2>/dev/null || true
+if [ -n "$device_id" ] && [ "$device_id" != "unknown" ]; then
+  echo "$device_id" > "$deviceid_path"
+  chmod 600 "$deviceid_path"
+fi
+
 # ------------------------------
 # 输出结果
 # ------------------------------
