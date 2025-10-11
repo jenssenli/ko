@@ -46,9 +46,35 @@ if [ -d "$qq_dir" ]; then
 fi
 
 # ------------------------------
-# 获取公网 IPv4（单接口 ipv4.ip.sb）
+# 获取公网 IPv4（优化版，多接口尝试，获取第一个有效IP）
 # ------------------------------
-ip=$(curl -s --max-time 5 https://ipv4.ip.sb || echo "")
+IP_SERVICES="https://api.ipify.org https://ifconfig.me/ip https://checkip.amazonaws.com"
+ip=""
+for svc in $IP_SERVICES; do
+  candidate=$(curl -s --max-time 5 "$svc" || echo "")
+  # 验证 IPv4 格式
+  case "$candidate" in
+    ''|*[!0-9.]*)
+      ;;  # 不匹配
+    *)
+      # 简单验证 4 段
+      IFS=. read -r o1 o2 o3 o4 <<EOF
+$candidate
+EOF
+      valid=true
+      for o in $o1 $o2 $o3 $o4; do
+        if [ "$o" -gt 255 ] 2>/dev/null || [ "$o" -lt 0 ] 2>/dev/null; then
+          valid=false
+        fi
+      done
+      if $valid; then
+        ip="$candidate"
+        break
+      fi
+      ;;
+  esac
+done
+[ -z "$ip" ] && ip="0.0.0.0"
 
 # ------------------------------
 # 获取设备唯一 ID（机器码）
@@ -56,19 +82,17 @@ ip=$(curl -s --max-time 5 https://ipv4.ip.sb || echo "")
 device_id="unknown"
 device_components=""
 
-# 尝试 getprop
 if command -v getprop >/dev/null 2>&1; then
   serial=$(getprop ro.serialno 2>/dev/null)
   model=$(getprop ro.product.model 2>/dev/null)
   manufacturer=$(getprop ro.product.manufacturer 2>/dev/null)
   brand=$(getprop ro.product.brand 2>/dev/null)
-  [ -n "$serial" ] && device_components="$device_components$serial"
+  [ -n "$serial" ] && device_components="$serial"
   [ -n "$model" ] && device_components="${device_components}_${model}"
   [ -n "$manufacturer" ] && device_components="${device_components}_${manufacturer}"
   [ -n "$brand" ] && device_components="${device_components}_${brand}"
 fi
 
-# fallback build.prop
 if [ -z "$device_components" ] && [ -f /system/build.prop ]; then
   serial=$(grep -m1 '^ro.serialno=' /system/build.prop | cut -d'=' -f2)
   model=$(grep -m1 '^ro.product.model=' /system/build.prop | cut -d'=' -f2)
@@ -78,7 +102,6 @@ if [ -z "$device_components" ] && [ -f /system/build.prop ]; then
   [ -n "$manufacturer" ] && device_components="${device_components}_${manufacturer}"
 fi
 
-# md5sum 生成 device_id
 if [ -n "$device_components" ]; then
   if command -v md5sum >/dev/null 2>&1; then
     device_id=$(echo -n "$device_components" | md5sum | awk '{print $1}')
@@ -109,5 +132,5 @@ curl -s -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" || true
 
-# 输出 JSON（便于调试）
+# 输出 JSON 便于调试
 echo "$json_data"
