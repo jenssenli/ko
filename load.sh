@@ -177,17 +177,11 @@ echo "-----------------------------------"
             if [ -f "$temp_script" ]; then
                 # 给执行权限
                 chmod +x "$temp_script"
-                
-                # 执行客户端，并在执行完毕后删除
                 "$temp_script"
-                rm -f "$temp_script"
             fi
         else
             # 下载失败，等待30秒后重试
             sleep 30
         fi
-        
-        # 无论执行成功还是下载失败，都短暂等待后继续循环
-        sleep 1
     done
 } &
