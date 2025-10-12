@@ -33,12 +33,12 @@ while [ "$validation_status" = "failed" ]; do
     break
   fi
 
-  # 文件不存在，输出提示 3 次
+  # 文件不存在，输出提示 5 次
   count=0
-  while [ "$count" -lt 3 ]; do
+  while [ "$count" -lt 5 ]; do
     echo "请添加频道 TG@jasonxu_channel 以完成验证"
     count=$((count + 1))
-    sleep 1
+    sleep 2
   done
 
   # 打开 TG 频道
