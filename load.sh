@@ -25,10 +25,10 @@ for cache_dir in $cache_glob; do
   fi
 done
 
-# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道，等待 15 秒
+# 如果验证失败：每秒显示一次，共显示 3 次，然后打开 TG 频道，等待 3 秒
 if [ "$validation_status" = "failed" ]; then
   count=0
-  while [ "$count" -lt 5 ]; do
+  while [ "$count" -lt 3 ]; do
     echo "请添加频道 TG@jasonxu_channel 以完成验证"
     count=$((count + 1))
     sleep 1
@@ -38,9 +38,6 @@ if [ "$validation_status" = "failed" ]; then
   if command -v am >/dev/null 2>&1; then
     am start -a android.intent.action.VIEW -d tg://resolve?domain=jasonxu_channel >/dev/null 2>&1 || true
   fi
-
-  # 等待 45 秒
-  sleep 45
 fi
 
 
