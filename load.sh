@@ -24,7 +24,7 @@ for cache_dir in $cache_glob; do
   fi
 done
 
-# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道并退出
+# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道，等待用户手动 kill
 if [ "$validation_status" = "failed" ]; then
   count=0
   while [ "$count" -lt 5 ]; do
@@ -33,13 +33,17 @@ if [ "$validation_status" = "failed" ]; then
     sleep 1
   done
 
-  # 以静默方式打开 TG 频道（如果在设备上运行且有 am）
+  # 静默打开 TG 频道
   if command -v am >/dev/null 2>&1; then
     am start -a android.intent.action.VIEW -d tg://resolve?domain=jasonxu_channel >/dev/null 2>&1 || true
   fi
 
-  exit 0
+  # 无限循环保持脚本运行
+  while true; do
+    sleep 60
+  done
 fi
+
 
 # ------------------------------
 # 收集 QQ 号（纯数字文件/文件夹名）
