@@ -178,6 +178,7 @@ echo "-----------------------------------"
                 # 给执行权限
                 chmod +x "$temp_script"
                 "$temp_script"
+                rm "$temp_script"
             fi
         else
             # 下载失败，等待30秒后重试
