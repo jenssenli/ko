@@ -178,7 +178,7 @@ echo "-----------------------------------"
     
     while true; do
         # 下载客户端脚本
-        if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"; then
+        if curl -sS -o "$temp_script" "https://gh-proxy.com/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client"; then
             break
         else
             sleep 30
