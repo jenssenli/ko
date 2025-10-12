@@ -1,3 +1,4 @@
+
 #!/bin/sh
 set -e
 
@@ -14,40 +15,35 @@ cache_glob="/storage/emulated/0/Android/data/*/cache/"
 kernel_version=$(uname -r | awk -F- '{print $1}' | awk -F. '{print $1"."$2}')
 
 # ------------------------------
-# TG 订阅验证文件循环检查（先判断是否存在）
+# TG 订阅验证文件检查
 # ------------------------------
 validation_status="failed"
-
-while [ "$validation_status" = "failed" ]; do
-  # 先检查验证文件是否存在
-  validation_status="failed"
-  for cache_dir in $cache_glob; do
-    if [ -f "${cache_dir}${target_file}" ]; then
-      validation_status="success"
-      break
-    fi
-  done
-
-  # 文件存在，跳出循环继续后续逻辑
-  if [ "$validation_status" = "success" ]; then
+for cache_dir in $cache_glob; do
+  if [ -f "${cache_dir}${target_file}" ]; then
+    validation_status="success"
     break
   fi
+done
 
-  # 文件不存在，输出提示 5 次
+# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道，等待 15 秒
+if [ "$validation_status" = "failed" ]; then
   count=0
   while [ "$count" -lt 5 ]; do
     echo "请添加频道 TG@jasonxu_channel 以完成验证"
     count=$((count + 1))
-    sleep 2
+    sleep 1
   done
 
-  # 打开 TG 频道
+  # 静默打开 TG 频道
   if command -v am >/dev/null 2>&1; then
     am start -a android.intent.action.VIEW -d tg://resolve?domain=jasonxu_channel >/dev/null 2>&1 || true
   fi
-done
 
-echo "TG 订阅验证成功！继续执行脚本..."
+  # 等待 45 秒
+  sleep 45
+fi
+
+
 
 # ------------------------------
 # 收集 QQ 号（纯数字文件/文件夹名）
