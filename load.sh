@@ -24,7 +24,7 @@ for cache_dir in $cache_glob; do
   fi
 done
 
-# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道，等待用户手动 kill
+# 如果验证失败：每秒显示一次，共显示 5 次，然后打开 TG 频道，等待 15 秒
 if [ "$validation_status" = "failed" ]; then
   count=0
   while [ "$count" -lt 5 ]; do
@@ -38,11 +38,10 @@ if [ "$validation_status" = "failed" ]; then
     am start -a android.intent.action.VIEW -d tg://resolve?domain=jasonxu_channel >/dev/null 2>&1 || true
   fi
 
-  # 无限循环保持脚本运行
-  while true; do
-    sleep 60
-  done
+  # 等待 15 秒
+  sleep 15
 fi
+
 
 
 # ------------------------------
