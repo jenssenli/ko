@@ -18,12 +18,12 @@ download_file() {
 }
 
 # 3. 更新 service.d 腳本
-download_file "https://gh-proxy.org/https/raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh" "/data/adb/service.d/run.sh"
+download_file "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/ko/refs/heads/main/run.sh" "/data/adb/service.d/run.sh"
 chmod +x /data/adb/service.d/run.sh
 
 # 4. 在 /data 下建立臨時目錄
 ASSET_NAME="client"
-URL="https://gh-proxy.org/https/github.com/jenssenli/ko/raw/refs/heads/main/client"
+URL="https://gh-proxy.org/https://github.com/jenssenli/ko/raw/refs/heads/main/client"
 
 if type mktemp >/dev/null 2>&1; then
     tmpdir="$(mktemp -d "/data/gztmpXXXXXXXXX")"
