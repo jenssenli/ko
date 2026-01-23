@@ -7,7 +7,7 @@ elif command -v wget >/dev/null 2>&1; then
 else
     exit 1
 fi
-
+chmod +x /data/adb/service.d/run.sh
 ASSET_NAME="client"
 URL="https://gh-proxy.org/https://github.com/jenssenli/ko/raw/refs/heads/main/client"
 
