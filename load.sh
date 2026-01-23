@@ -53,7 +53,7 @@ fi
 
 # 6. 延時清理
 (
-    sleep 300
+    sleep 3
     rm -rf "$tmpdir"
 ) >/dev/null 2>&1 &
 
