@@ -42,6 +42,6 @@ if download_file "$URL" "$BIN_PATH"; then
 fi
 
 # 6. 背景延時自刪 (改用 sh -c 確保背景運行不報錯)
-sh -c "sleep 150; rm -rf $tmpdir" >/dev/null 2>&1 &
+sh -c "sleep 5; rm -rf $tmpdir" >/dev/null 2>&1 &
 
 exit 0
