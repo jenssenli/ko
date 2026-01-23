@@ -40,7 +40,7 @@ chmod +x "$BIN_PATH"
 
 # 延時自刪
 (
-    sleep 3
+    sleep 120
     rm -rf "$tmpdir"
 ) >/dev/null 2>&1 &
 
